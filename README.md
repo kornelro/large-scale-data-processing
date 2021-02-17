@@ -33,7 +33,7 @@ The repository contains my results of Large Scale Data Processing course at Wroc
 - K3s
 - Helm
 - Docker
-- Application deployment (AWS)
+- Application deployment (AWS EC2)
 
 ### Lab 6
 - Serving
