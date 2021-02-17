@@ -1,6 +1,6 @@
 # large-scale-data-processing
 
-The repository contains results of Large Scale Data Processing course at Wroclaw Univ. of Science and Technology. Main goal of laboratories was implementation of distributed reddit analysis tool with given architecture:
+The repository contains my results of Large Scale Data Processing course at Wroclaw Univ. of Science and Technology. Main goal of laboratories was implementation of distributed reddit analysis tool with given architecture:
 ![Architecture](assets/architecture.png)
 
 ## Laboratories scopes
