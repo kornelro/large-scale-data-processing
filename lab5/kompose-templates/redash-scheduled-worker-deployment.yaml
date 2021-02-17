@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redash-scheduled-worker
+  name: redash-scheduled-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: redash-scheduled-worker
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: redash-scheduled-worker
+    spec:
+      containers:
+        - args:
+            - worker
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: redash-redash-env
+            - name: PYTHONUNBUFFERED
+              valueFrom:
+                configMapKeyRef:
+                  key: PYTHONUNBUFFERED
+                  name: redash-redash-env
+            - name: QUEUES
+              value: scheduled_queries,schemas
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: REDASH_COOKIE_SECRET
+                  name: redash-redash-env
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: REDASH_DATABASE_URL
+                  name: redash-redash-env
+            - name: REDASH_LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  key: REDASH_LOG_LEVEL
+                  name: redash-redash-env
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: REDASH_REDIS_URL
+                  name: redash-redash-env
+            - name: REDASH_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: REDASH_SECRET_KEY
+                  name: redash-redash-env
+            - name: WORKERS_COUNT
+              value: "1"
+          image: redash/redash:8.0.0.b32245
+          name: redash-scheduled-worker
+          resources: {}
+      restartPolicy: Always
+status: {}

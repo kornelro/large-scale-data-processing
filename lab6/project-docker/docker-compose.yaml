@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+
+  flask-embedder:
+    build: ./flask-embedder/.
+    ports:
+      - "56733:80"
+    volumes: 
+      # - ./flask-embedder:/app
+      - ./embeddings:/root/.magnitude
+
+  flask-spark:
+    build: ./flask-spark/.
+    ports:
+      - "8081:8080"
+    # volumes: 
+      # - ./flask-spark/app:/app
+      # - ./models:/spark_models
+    command: [spark-submit, app.py]
+
+  streamlit:
+    build: ./streamlit/.
+    command: [streamlit, run, app/main.py]
+    ports:
+      - "8501:8501"
+    # volumes:
+      # - ./streamlit/app:/app
+    links:
+      - flask-embedder
+      - flask-spark
+    environment: 
+      - FLASK_EMBEDDER_SERVICE_HOST=flask-embedder
+      - FLASK_EMBEDDER_SERVICE_PORT=80
+      - FLASK_SPARK_SERVICE_HOST=flask-spark
+      - FLASK_SPARK_SERVICE_PORT=8080
+      - LR_ROUTING=lr
+      - BC_ROUTING=bc
+      - MC_ROUTING=mc

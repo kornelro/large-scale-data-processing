@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  frequency_s: "60"
+  subreddit: politics+Conservative+neoliberal+ThatsInsane+Coronavirus+news+AskReddit+technology+Jokes+MapPorn+NoStupidQuestions+cyberpunkgame+AskMen+books+xboxone
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: beat-scraper-app_settings-env
+  name: app_settings-env

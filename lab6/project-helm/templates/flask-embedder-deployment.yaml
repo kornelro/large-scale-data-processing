@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f project-docker/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: flask-embedder
+  name: flask-embedder
+spec:
+  replicas: {{ .Values.flaskEmbedderReplicaCount }}
+  selector:
+    matchLabels:
+      io.kompose.service: flask-embedder
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f project-docker/docker-compose.yaml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: flask-embedder
+    spec:
+      containers:
+        - image: kornelro/lsdp6_embedder
+          name: flask-embedder
+          ports:
+            - containerPort: 80
+          resources: {}
+          volumeMounts:
+            - mountPath: /root/.magnitude
+              name: flask-embedder-claim0
+      restartPolicy: Always
+      volumes:
+        - name: flask-embedder-claim0
+          hostPath:
+            path: {{ .Values.volumeMagnitudePath }}
+status: {}

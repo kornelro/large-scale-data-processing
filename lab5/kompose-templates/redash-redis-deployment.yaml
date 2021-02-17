@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redash-redis
+  name: redash-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: redash-redis
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: redash-redis
+    spec:
+      containers:
+        - image: redis:5.0-alpine
+          name: redash-redis
+          resources: {}
+      restartPolicy: Always
+status: {}

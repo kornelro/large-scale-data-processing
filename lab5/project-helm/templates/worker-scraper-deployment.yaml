@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: worker-scraper
+  name: worker-scraper
+spec:
+  replicas: {{ .Values.workerScraperReplicaCount }}
+  selector:
+    matchLabels:
+      io.kompose.service: worker-scraper
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: worker-scraper
+    spec:
+      containers:
+        - args:
+            - celery
+            - worker
+            - --app=worker_scraper.app
+            - --queues=scraper
+            - -E
+          env:
+            - name: broker_protocol
+              value: {{ .Values.celeryBrokerProtocol }}
+            - name: broker_user
+              value: {{ .Values.rabbitmq.auth.username }}
+            - name: broker_password
+              valueFrom:
+                secretKeyRef:
+                  key: rabbitmq-password
+                  name: {{ .Release.Name }}-rabbitmq
+            - name: broker_host
+              value: {{ .Release.Name }}{{ .Values.celeryBrokerHostPostfix }}
+            - name: broker_port
+              value: {{ quote .Values.celeryBrokerPort }}
+            - name: CELERY_RESULT_BACKEND
+              value: {{ .Values.celeryResultBackend }}
+            - name: CELERY_WORKER_SEND_TASK_EVENTS
+              value: {{ quote .Values.celeryWorkerSendTaskEvents }}
+            - name: frequency_s
+              valueFrom:
+                configMapKeyRef:
+                  key: frequencyS
+                  name: app-settings
+            - name: praw_client_id
+              valueFrom:
+                secretKeyRef:
+                  key: prawClientId
+                  name: credentials-secret
+            - name: praw_client_secret
+              valueFrom:
+                secretKeyRef:
+                  key: prawClientSecret
+                  name: credentials-secret
+            - name: praw_password
+              valueFrom:
+                secretKeyRef:
+                  key: prawPassword
+                  name: credentials-secret
+            - name: praw_username
+              valueFrom:
+                secretKeyRef:
+                  key: prawUsername
+                  name: credentials-secret
+            - name: subreddit
+              valueFrom:
+                configMapKeyRef:
+                  key: subreddit
+                  name: app-settings
+            - name: influxdb_host
+              value: {{ .Release.Name }}{{ .Values.influxdbHostPostfix }}
+            - name: influxdb_user
+              value: {{ .Values.influxdbUser }}
+            - name: influxdb_password
+              valueFrom:
+                secretKeyRef:
+                  key: admin-user-password
+                  name: {{ .Release.Name }}-influxdb
+          image: kornelro/lsdp_k3s
+          name: worker-scraper
+          resources: {}
+      restartPolicy: Always
+status: {}

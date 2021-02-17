@@ -1,0 +1,65 @@
+# Default values for project-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+beatScraperReplicaCount: 1
+workerEmbedderReplicaCount: 1
+workerMongoReplicaCounts: 1
+workerScraperReplicaCount: 1
+
+celeryBrokerProtocol: amqp
+celeryBrokerHostPostfix: -rabbitmq.default.svc
+celeryBrokerPort: 5672
+celeryResultBackend: rpc
+
+influxdbHostPostfix: -influxdb.default.svc.cluster.local
+influxdbUser: admin
+
+mongodbProtocol: mongodb
+mongodbUser: root
+mongodbHostPostfix: -mongodb.default.svc.cluster.local
+mongodbPort: 27017
+
+volumeMagnitudePath: /home/ubuntu/lsdp/magnitude
+volumeMongoDataPath: /home/ubuntu/lsdp/mongo-data
+volumeInfluxDataPath: /home/ubuntu/lsdp/influx-data
+
+rabbitmq:
+  auth:
+    username: useruser2
+    password: cbacba
+
+influxdb:
+  adminUser:
+    pwd: cbacba
+  persistence:
+    existingClaim: influx-data
+  volumePermissions:
+    enabled: true
+
+grafana:
+  admin:
+    user: admin
+    password: adminadmin
+  service:
+      type: NodePort
+
+mongodb:
+  auth:
+    rootPassword: cbacba
+    password: cbacba
+  persistence:
+    existingClaim: mongo-data
+  volumePermissions:
+    enabled: true
+
+redash:
+  redash:
+    cookieSecret: abcabc
+    secretKey: abcabc
+  postgresql:
+    postgresqlPassword: cbacba
+  redis:
+    password: cbacba
+  service:
+    type: NodePort

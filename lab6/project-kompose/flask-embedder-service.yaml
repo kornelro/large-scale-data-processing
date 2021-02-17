@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f project-docker/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: flask-embedder
+  name: flask-embedder
+spec:
+  ports:
+    - name: "56733"
+      port: 56733
+      targetPort: 80
+  selector:
+    io.kompose.service: flask-embedder
+status:
+  loadBalancer: {}

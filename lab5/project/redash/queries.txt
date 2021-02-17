@@ -1,0 +1,37 @@
+{
+	"collection": "submissions",
+	"aggregate": [{
+		"$unwind": "$subbreddit_display_name"
+	}, {
+		"$group": {
+			"_id": "$subbreddit_display_name",
+			"count": {
+				"$sum": 1
+			}
+		}
+	}]
+}
+
+{
+    "collection": "submissions",
+    "aggregate": [
+        {
+            "$unwind": "$post_text"
+        },
+        {
+            "$addFields": {
+                "len": {
+                    "$strLenCP": "$post_text"
+                }
+            }
+        }
+    ],
+    "fields": {
+        "_id": 1,
+        "len": 1
+    }
+}
+
+SELECT len, count(_id) FROM query_1 GROUP BY len
+
+SELECT count(_id) AS Reddits_number FROM query_2

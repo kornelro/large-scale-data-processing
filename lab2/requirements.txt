@@ -1,0 +1,5 @@
+celery==4.3.1
+celery-prometheus-exporter
+prometheus-client
+influxdb
+praw

@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+    server:
+        build: ./../task_3/
+        expose:
+            - "5000"
+        restart: "on-failure"
+        deploy:
+            resources:
+              limits:
+                cpus: '0.25'
+                memory: 20M
+              reservations:
+                cpus: '0.1'
+                memory: 5M
+
+    client:
+        build: ./client/
+        links:
+            - "server"
+        depends_on: 
+            - "server"
+        restart: "always"

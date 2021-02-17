@@ -1,0 +1,36 @@
+version: '3.4'
+
+volumes:
+
+  mongo_data: 
+    external:
+      name: project_mongo_data
+
+services:
+
+  standalone_app:
+    build: .
+    command: [spark-submit, --packages, org.mongodb.spark:mongo-spark-connector_2.11:2.4.2, run_pipelines.py]
+    volumes:
+      - ./app-spark:/app
+      - ../project-docker/models:/app/saved_models
+    depends_on: 
+      - mongodb
+    links:
+      - mongodb
+    env_file: 
+      - mongo_root_credentials.env
+
+  mongodb:
+    image: mongo
+    command: [mongod, --auth]
+    environment:
+      - MONGO_INITDB_DATABASE=reddit
+    env_file: 
+      - mongo_root_credentials.env
+    volumes:
+      - ./mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo_data:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+

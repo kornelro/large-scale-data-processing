@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f project-docker/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: streamlit
+  name: streamlit
+spec:
+  replicas: {{ .Values.streamlitReplicaCount }}
+  selector:
+    matchLabels:
+      io.kompose.service: streamlit
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f project-docker/docker-compose.yaml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: streamlit
+    spec:
+      containers:
+        - args:
+            - streamlit
+            - run
+            - app/main.py
+          env:
+            - name: BC_ROUTING
+              value: {{ .Values.bcRouting }}
+            - name: LR_ROUTING
+              value: {{ .Values.lrRouting }}
+            - name: MC_ROUTING
+              value: {{ .Values.mcRouting }}
+          image: kornelro/lsdp6_streamlit
+          name: streamlit
+          ports:
+            - containerPort: 8501
+          resources: {}
+      restartPolicy: Always
+status: {}

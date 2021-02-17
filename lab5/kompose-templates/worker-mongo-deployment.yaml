@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: worker-mongo
+  name: worker-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: worker-mongo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f l5-tn19-kornelro/project/docker-compose.yaml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: worker-mongo
+    spec:
+      containers:
+        - args:
+            - celery
+            - worker
+            - --app=worker_mongo.app
+            - --queues=mongo
+          env:
+            - name: CELERY_BROKER_URL
+              value: amqp://guest:guest@rabbitmq:5672
+            - name: CELERY_RESULT_BACKEND
+              value: rpc
+            - name: CELERY_WORKER_SEND_TASK_EVENTS
+              value: "True"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_ROOT_PASSWORD
+                  name: mongo_root_credentials-env
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: MONGO_INITDB_ROOT_USERNAME
+                  name: mongo_root_credentials-env
+            - name: frequency_s
+              valueFrom:
+                configMapKeyRef:
+                  key: frequency_s
+                  name: app_settings-env
+            - name: praw_client_id
+              valueFrom:
+                configMapKeyRef:
+                  key: praw_client_id
+                  name: praw_credentials-env
+            - name: praw_client_secret
+              valueFrom:
+                configMapKeyRef:
+                  key: praw_client_secret
+                  name: praw_credentials-env
+            - name: praw_password
+              valueFrom:
+                configMapKeyRef:
+                  key: praw_password
+                  name: praw_credentials-env
+            - name: praw_username
+              valueFrom:
+                configMapKeyRef:
+                  key: praw_username
+                  name: praw_credentials-env
+            - name: subreddit
+              valueFrom:
+                configMapKeyRef:
+                  key: subreddit
+                  name: app_settings-env
+          image: worker
+          name: worker-mongo
+          resources: {}
+          # volumeMounts:
+          #   - mountPath: /app
+          #     name: worker-mongo-claim0
+      restartPolicy: Always
+      # volumes:
+      #   - name: worker-mongo-claim0
+      #     persistentVolumeClaim:
+      #       claimName: worker-mongo-claim0
+status: {}

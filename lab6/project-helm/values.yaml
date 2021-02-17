@@ -1,0 +1,13 @@
+# Default values for project.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+flaskEmbedderReplicaCount: 1
+flaskSparkReplicaCount: 1
+streamlitReplicaCount: 1
+
+bcRouting: bc
+lrRouting: lr
+mcRouting: mc
+
+volumeMagnitudePath: /home/ubuntu/lsdp/magnitude
